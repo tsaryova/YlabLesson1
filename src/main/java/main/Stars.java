@@ -25,7 +25,6 @@ public class Stars {
             int m = scanner.nextInt();
             String template = scanner.next();
 
-            String strLineToPrint = "";
             String[] arrSymbolsInLine = new String[m];
             for (int i = 0; i < m; i++) {
                 arrSymbolsInLine[i] = template;
