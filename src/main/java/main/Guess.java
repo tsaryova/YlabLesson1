@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Guess {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         int number = new Random().nextInt(100);
         int maxAttempts = 10;
         int countAttempts = 1;
