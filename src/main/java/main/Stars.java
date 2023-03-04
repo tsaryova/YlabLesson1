@@ -10,11 +10,29 @@ public class Stars {
             int m = scanner.nextInt();
             String template = scanner.next();
             for (int i = 0; i < n; i++) {
-                String strLine = "";
                 for (int j = 0; j < m; j++) {
-                    strLine = strLine.concat(template);
+                    System.out.print(template);;
                 }
-                System.out.println(strLine);
+                System.out.println();
+            }
+        }
+
+    }
+
+    public static void printFigureWithSpaces() throws Exception{
+        try (Scanner scanner = new Scanner(System.in)){
+            int n = scanner.nextInt();
+            int m = scanner.nextInt();
+            String template = scanner.next();
+
+            String strLineToPrint = "";
+            String[] arrSymbolsInLine = new String[m];
+            for (int i = 0; i < m; i++) {
+                arrSymbolsInLine[i] = template;
+            }
+
+            for (int i = 0; i < n; i++) {
+                System.out.println(String.join(" ", arrSymbolsInLine));
             }
         }
     }
