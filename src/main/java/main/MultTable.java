@@ -2,7 +2,7 @@ package main;
 
 public class MultTable {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         short start = 1;
         short end = 9;
         for (short i = start; i <= end; i++) {
