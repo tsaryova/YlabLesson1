@@ -17,13 +17,13 @@ public class Pell {
                         System.out.println(1);
                         break;
                     default:
-                        int P_n_1 = 1;
-                        int P_n_2 = 0;
+                        int prev = 1;
+                        int prevPrev = 0;
                         int result = 0;
                         for (int i = 2; i <= n; i++) {
-                            result = 2 * P_n_1 + P_n_2;
-                            P_n_2 = P_n_1;
-                            P_n_1 = result;
+                            result = 2 * prev + prevPrev;
+                            prevPrev = prev;
+                            prev = result;
                         }
                         System.out.println(result);
                         break;

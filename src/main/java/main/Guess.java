@@ -12,25 +12,26 @@ public class Guess {
         System.out.println("Я загадал число. У тебя " + maxAttempts + " попыток угадать.");
 
         try (Scanner scanner = new Scanner(System.in)){
-            while (scanner.hasNext()) {
+            boolean isGetData = true;
+            while (isGetData) {
                 int inputNum = scanner.nextInt();
-                if (countAttempts < maxAttempts ) {
-                    if (inputNum > number) {
-                        System.out.printf("Мое число меньше! Осталось %d попыток %n", maxAttempts - countAttempts);
-                    } else if (inputNum < number) {
-                        System.out.printf("Мое число больше! Осталось %d попыток %n", maxAttempts - countAttempts);
-                    } else {
-                        System.out.printf("Ты угадал с %d попытки!", countAttempts);
-                        break;
-                    }
-                    countAttempts++;
+
+                if (inputNum > number) {
+                    System.out.printf("Мое число меньше! Осталось %d попыток %n", maxAttempts - countAttempts);
+                } else if (inputNum < number) {
+                    System.out.printf("Мое число больше! Осталось %d попыток %n", maxAttempts - countAttempts);
                 } else {
+                    System.out.printf("Ты угадал с %d попытки!", countAttempts);
+                    isGetData = false;
+                }
+                countAttempts++;
+
+                if (countAttempts > maxAttempts){
                     System.out.println("Ты не угадал!");
-                    break;
+                    isGetData = false;
                 }
             }
         }
-
     }
 
 }
