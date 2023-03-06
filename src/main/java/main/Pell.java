@@ -28,7 +28,6 @@ public class Pell {
                         System.out.println(result);
                         break;
                 }
-
             } else {
                 System.out.println("Введите n в диапазоне 0 <= n <= 30");
             }

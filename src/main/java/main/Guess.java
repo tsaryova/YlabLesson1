@@ -9,6 +9,7 @@ public class Guess {
         int number = new Random().nextInt(100);
         int maxAttempts = 10;
         int countAttempts = 1;
+
         System.out.println("Я загадал число. У тебя " + maxAttempts + " попыток угадать.");
 
         try (Scanner scanner = new Scanner(System.in)){
