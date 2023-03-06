@@ -1,4 +1,4 @@
-package main;
+package io.ylab.lessons.lesson1;
 
 import java.util.Random;
 import java.util.Scanner;
