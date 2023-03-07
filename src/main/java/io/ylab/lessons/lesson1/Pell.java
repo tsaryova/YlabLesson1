@@ -17,9 +17,9 @@ public class Pell {
                         System.out.println(1);
                         break;
                     default:
-                        int prev = 1;
-                        int prevPrev = 0;
-                        int result = 0;
+                        long prev = 1;
+                        long prevPrev = 0;
+                        long result = 0;
                         for (int i = 2; i <= n; i++) {
                             result = 2 * prev + prevPrev;
                             prevPrev = prev;

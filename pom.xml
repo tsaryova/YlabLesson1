@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.example</groupId>
-    <artifactId>YlabLesson1</artifactId>
+    <artifactId>YlabLesson</artifactId>
     <version>1.0-SNAPSHOT</version>
     <build>
         <plugins>
