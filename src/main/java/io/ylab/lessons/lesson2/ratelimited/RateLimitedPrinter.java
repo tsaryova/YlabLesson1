@@ -10,6 +10,7 @@ public class RateLimitedPrinter {
         this.lastTimeToPrint = 0;
 
     }
+
     public void print(String message) {
         if (canPrinting()) {
             System.out.println(message);
