@@ -1,3 +1,2 @@
-# YlabLesson1
-Интенсив по Java от Ylab.
-Домашнее задание к занятию "Основы Java".
+# YlabLessons
+Интенсив по Java от Ylab
