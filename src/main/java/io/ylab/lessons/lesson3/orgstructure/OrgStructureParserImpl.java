@@ -12,8 +12,9 @@ import java.util.stream.Collectors;
 
 public class OrgStructureParserImpl implements OrgStructureParser {
 
-    private List<Employee> employees;
     private static final int COUNT_LINES_TO_SKIP = 1;
+
+    private List<Employee> employees;
     private Employee mainBoss;
 
     public OrgStructureParserImpl() {
