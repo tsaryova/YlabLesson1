@@ -87,5 +87,4 @@ public class OrgStructureParserImpl implements OrgStructureParser {
         }
     }
 
-
 }
