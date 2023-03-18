@@ -9,8 +9,9 @@ public class OrgStructureTest {
         File csvFile = new File("src/main/resources/lessons/lesson3/orgstructure/structure.csv");
         OrgStructureParser parser = new OrgStructureParserImpl();
         Employee boss = parser.parseStructure(csvFile);
-        System.out.println(boss.getId());
+        System.out.println(boss.getId()); // 1
         List<Employee> subordinates = boss.getSubordinate();
-        subordinates.stream().forEach(employee -> System.out.println(employee.getName())); // Крокодилова Людмила Петровна, Сидоров Василий Васильевич, Зайцев Валерий Петрович
+        subordinates.stream()
+                .forEach(employee -> System.out.println(employee.getName())); // Крокодилова Людмила Петровна, Сидоров Василий Васильевич, Зайцев Валерий Петрович
     }
 }
