@@ -30,7 +30,5 @@ public class DatedMapTest {
         datedMap.remove(testKey);
         System.out.println(datedMap.getKeyLastInsertionDate(testKey)); //null
 
-
-
     }
 }

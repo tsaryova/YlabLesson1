@@ -1,6 +1,5 @@
 package io.ylab.lessons.lesson3.transliterator;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class TransliteratorImpl implements Transliterator{
