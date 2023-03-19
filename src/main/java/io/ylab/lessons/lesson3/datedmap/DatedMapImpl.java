@@ -43,7 +43,7 @@ public class DatedMapImpl implements DatedMap {
 
     @Override
     public Set<String> keySet() {
-        return datedMap.keySet();
+        return currentMap.keySet();
     }
 
     @Override
