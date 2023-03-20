@@ -22,7 +22,7 @@ public class Sorter {
     private int countElementsToRead;
 
     public Sorter() {
-        countElementsToRead = 100;
+        countElementsToRead = 1_000_000;
     }
 
     public File sortFile(File dataFile) throws IOException {

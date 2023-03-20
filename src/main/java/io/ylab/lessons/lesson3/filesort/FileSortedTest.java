@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 public class FileSortedTest {
     public static void main(String[] args) throws IOException {
-        File dataFile = new Generator().generate("data.txt", 500);
+        File dataFile = new Generator().generate("data.txt", 370_000_000);
         System.out.println(new Validator(dataFile).isSorted()); // false
 
         long startTime = System.currentTimeMillis();
