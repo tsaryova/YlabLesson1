@@ -22,7 +22,7 @@ public class Sorter {
     private int countElementsToRead;
 
     public Sorter() {
-        countElementsToRead = 1_000_000;
+        countElementsToRead = 100;
     }
 
     public File sortFile(File dataFile) throws IOException {
@@ -84,12 +84,10 @@ public class Sorter {
 
             while ((currentElem = bufferedReader.readLine()) != null) {
                 countElementsInFile++;
-
+                bufferList.add(Long.parseLong(currentElem));
                 if (curCountInChunk < countElementsToRead - 1) {
-                    bufferList.add(Long.parseLong(currentElem));
                     curCountInChunk++;
                 } else {
-                    bufferList.add(Long.parseLong(currentElem));
                     writeSortedElementsToTempFile(bufferList, numTempFile);
                     numTempFile++;
                     curCountInChunk = 0;
@@ -97,12 +95,11 @@ public class Sorter {
                 }
             }
 
-            if (numTempFile == 0) {
-                writeSortedElementsToTempFile(bufferList, 0);
-                numTempFile++;
-                countElementsToRead = countElementsInFile;
+            if (!bufferList.isEmpty()) {
+                writeSortedElementsToTempFile(bufferList, numTempFile);
+                countElementsToRead = (numTempFile == 0) ? countElementsInFile : countElementsToRead;
             }
-            countFiles = numTempFile;
+            countFiles = ++numTempFile;
 
         }
     }
