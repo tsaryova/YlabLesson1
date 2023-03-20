@@ -10,6 +10,7 @@ public class FileSortedTest {
         System.out.println(new Validator(dataFile).isSorted()); // false
 
         long startTime = System.currentTimeMillis();
+
         Sorter sorter = new Sorter();
         File sortedFile = sorter.sortFile(dataFile);
         System.out.println(new Validator(sortedFile).isSorted()); // true
