@@ -10,12 +10,14 @@ public class FileSortedTest {
         System.out.println(new Validator(dataFile).isSorted()); // false
 
         long startTime = System.currentTimeMillis();
-
-        File sortedFile = new Sorter().sortFile(dataFile);
+        Sorter sorter = new Sorter();
+        File sortedFile = sorter.sortFile(dataFile);
         System.out.println(new Validator(sortedFile).isSorted()); // true
 
         long endTime = System.currentTimeMillis();
         System.out.println(TimeUnit.MILLISECONDS.toSeconds(endTime - startTime));
+
+        System.out.println(new Validator(sortedFile).isEqualsContentFiles(dataFile)); // true
 
     }
 }
