@@ -98,8 +98,9 @@ public class Sorter {
             if (!bufferList.isEmpty()) {
                 writeSortedElementsToTempFile(bufferList, numTempFile);
                 countElementsToRead = (numTempFile == 0) ? countElementsInFile : countElementsToRead;
+                numTempFile++;
             }
-            countFiles = ++numTempFile;
+            countFiles = numTempFile;
 
         }
     }
