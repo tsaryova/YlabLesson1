@@ -14,33 +14,40 @@ import java.util.List;
 
 
 public class Sorter {
-    private static final int COUNT_ELEMENTS_TO_READ = 1_000_000;
     private static final String START_NAME_TEMP_FILE = "temp-file-";
+    private static final String NEW_FILE_PATHNAME = "external-sorted.txt";
+
     private int countElementsInFile;
     private int countFiles;
-    private static final String NEW_FILE_PATHNAME = "external-sorted.txt";
+    private int countElementsToRead;
+
+    public Sorter() {
+        countElementsToRead = 1_000_000;
+    }
 
     public File sortFile(File dataFile) throws IOException {
 
-        createTempFullyFiles(dataFile); // здесь присваются актуальные значения для countFiles и countElementsInFile
+        createTempFilledFiles(dataFile); // здесь присваиваются актуальные значения для countFiles и countElementsInFile
 
         if (countFiles > 0 && countElementsInFile > 0) {
 
             long[] topElements = new long[countFiles];
             BufferedReader[] arrBufferedReader = new BufferedReader[countFiles];
 
-            //получаем первые значения из каждого файла
+            //получаем верхние значения из каждого файла для сравнения
             for (int i = 0; i < countFiles; i++) {
                 arrBufferedReader[i] = new BufferedReader(new FileReader(START_NAME_TEMP_FILE + i + ".txt"));
                 String FirstElementStr = arrBufferedReader[i].readLine();
-                if (FirstElementStr != null){
+                if (FirstElementStr != null) {
                     topElements[i] = Long.parseLong(FirstElementStr);
+                } else {
+                    topElements[i] = Long.MAX_VALUE;
                 }
             }
 
             File sortedFile = createAndWriteSortedFile(arrBufferedReader, topElements);
 
-            for (int i = 0; i < countFiles; i++){
+            for (int i = 0; i < countFiles; i++) {
                 arrBufferedReader[i].close();
                 Files.deleteIfExists(Paths.get(START_NAME_TEMP_FILE + i + ".txt"));
             }
@@ -51,11 +58,12 @@ public class Sorter {
         return null;
     }
 
-    private void writeSortedElementToTempFile(List<Long> sortedElems, int numTempFile) throws IOException {
+    private void writeSortedElementsToTempFile(List<Long> sortedElems, int numTempFile) throws IOException {
         try (
                 FileWriter fileWriter = new FileWriter(START_NAME_TEMP_FILE + numTempFile + ".txt");
                 PrintWriter printWriter = new PrintWriter(fileWriter);
         ) {
+            Collections.sort(sortedElems);
             for (int i = 0; i < sortedElems.size(); i++) {
                 printWriter.println(sortedElems.get(i));
             }
@@ -63,7 +71,7 @@ public class Sorter {
         }
     }
 
-    private void createTempFullyFiles(File file) throws IOException {
+    private void createTempFilledFiles(File file) throws IOException {
         try (
                 FileReader fileReader = new FileReader(file);
                 BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -75,20 +83,25 @@ public class Sorter {
             int numTempFile = 0;
 
             while ((currentElem = bufferedReader.readLine()) != null) {
-                if (curCountInChunk < COUNT_ELEMENTS_TO_READ - 1) {
+                countElementsInFile++;
+
+                if (curCountInChunk < countElementsToRead - 1) {
                     bufferList.add(Long.parseLong(currentElem));
                     curCountInChunk++;
                 } else {
                     bufferList.add(Long.parseLong(currentElem));
-                    Collections.sort(bufferList);
-                    writeSortedElementToTempFile(bufferList, numTempFile);
-                    bufferList.clear();
-                    curCountInChunk = 0;
+                    writeSortedElementsToTempFile(bufferList, numTempFile);
                     numTempFile++;
+                    curCountInChunk = 0;
+                    bufferList.clear();
                 }
-                countElementsInFile++;
             }
 
+            if (numTempFile == 0) {
+                writeSortedElementsToTempFile(bufferList, 0);
+                numTempFile++;
+                countElementsToRead = countElementsInFile;
+            }
             countFiles = numTempFile;
 
         }
@@ -111,7 +124,7 @@ public class Sorter {
 
             printWriter.println(min);
             String nextElem = arrBufferedReader[fileWithMin].readLine();
-            if (nextElem != null){
+            if (nextElem != null) {
                 topElements[fileWithMin] = Long.parseLong(nextElem);
             } else {
                 topElements[fileWithMin] = Long.MAX_VALUE;
