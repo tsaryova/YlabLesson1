@@ -50,7 +50,7 @@ public class PersistentMapImpl implements PersistentMap {
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(getKeysSql)) {
 
-            setDataPrepareStatement(preparedStatement, 1, this.name);
+            preparedStatement.setString(1, this.name);
 
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -68,9 +68,9 @@ public class PersistentMapImpl implements PersistentMap {
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(getSql)) {
 
-            setDataPrepareStatement(preparedStatement, 1, this.name);
+            preparedStatement.setString(1, this.name);
             if (key != null) {
-                setDataPrepareStatement(preparedStatement, 2, key);
+                preparedStatement.setString(2, key);
             }
 
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -88,9 +88,9 @@ public class PersistentMapImpl implements PersistentMap {
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(removeSql)) {
 
-            setDataPrepareStatement(preparedStatement, 1, this.name);
+            preparedStatement.setString(1, this.name);
             if (key != null){
-                setDataPrepareStatement(preparedStatement, 2, key);
+                preparedStatement.setString(2, key);
             }
 
             preparedStatement.executeUpdate();
@@ -107,9 +107,9 @@ public class PersistentMapImpl implements PersistentMap {
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(putSql)) {
 
-            setDataPrepareStatement(preparedStatement, 1, this.name);
-            setDataPrepareStatement(preparedStatement, 2, key);
-            setDataPrepareStatement(preparedStatement, 3, value);
+            preparedStatement.setString(1, this.name);
+            preparedStatement.setString(2, key);
+            preparedStatement.setString(3, value);
 
             preparedStatement.executeUpdate();
         }
@@ -121,18 +121,9 @@ public class PersistentMapImpl implements PersistentMap {
         try (Connection connection = this.dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(removeSql)) {
 
-            setDataPrepareStatement(preparedStatement, 1, this.name);
+            preparedStatement.setString(1, this.name);
 
             preparedStatement.executeUpdate();
-        }
-    }
-
-    private void setDataPrepareStatement(PreparedStatement preparedStatement, int index, String value)
-            throws SQLException {
-        if (value == null) {
-            preparedStatement.setNull(index, Types.VARCHAR);
-        } else {
-            preparedStatement.setString(index, value);
         }
     }
 
