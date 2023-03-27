@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rabbitmq.client.BuiltinExchangeType;
@@ -25,6 +26,7 @@ public class DbApp {
         // тут пишем создание и запуск приложения работы с БД
 
         PersonDao personDao = new PersonDaoImpl(dataSource);
+        ObjectMapper mapper = new ObjectMapper();
 
         try (Connection connection = connectionFactory.newConnection();
              Channel channel = connection.createChannel()) {
@@ -34,31 +36,43 @@ public class DbApp {
                 if (message != null) {
                     String received = new String(message.getBody());
 
-                    ObjectMapper mapper = new ObjectMapper();
                     JsonNode rootNode = mapper.readTree(received);
                     String operation = rootNode.get("operation").textValue();
 
-                     switch (operation) {
-                         case "save":
-                             JsonNode personDataJson = rootNode.get("person");
-                             Person person = mapper.readValue(personDataJson.toString(), Person.class);
-                             personDao.savePerson(person);
-                             break;
-                         case "delete":
-                             Long personId = rootNode.get("person_id").longValue();
-                             if (personId == null || personId <= 0) {
-                                 System.err.println("Uncorrect person_id");
-                             } else {
-                                 personDao.deletePerson(personId);
-                             }
-                             break;
-                         default:
-                             System.err.println("This operation is absent");
-                             break;
-                     }
+                    doDbOperation(operation, rootNode, personDao);
 
                 }
             }
+        }
+    }
+
+    private static void doDbOperation(String operation, JsonNode rootNode, PersonDao personDao) {
+        switch (operation) {
+            case "save":
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode personDataJson = rootNode.get("person");
+                Person person = null;
+
+                try {
+                    person = mapper.readValue(personDataJson.toString(), Person.class);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+
+                personDao.savePerson(person);
+
+                break;
+            case "delete":
+                Long personId = rootNode.get("person_id").longValue();
+                if (personId == null || personId <= 0) {
+                    System.err.println("Uncorrect person_id");
+                } else {
+                    personDao.deletePerson(personId);
+                }
+                break;
+            default:
+                System.err.println("This operation is absent");
+                break;
         }
     }
 
