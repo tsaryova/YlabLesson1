@@ -22,7 +22,6 @@ public class PersistentMapImpl implements PersistentMap {
     }
 
     @Override
-
     public void init(String name) {
         if (name != null) {
             this.name = name;
