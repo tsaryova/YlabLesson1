@@ -1,5 +1,6 @@
 package io.ylab.intensive.lesson04.eventsourcing.api;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,11 +8,14 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rabbitmq.client.BuiltinExchangeType;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.ConnectionFactory;
 import io.ylab.intensive.lesson04.eventsourcing.Person;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.sql.DataSource;
 
 /**
@@ -20,47 +24,32 @@ import javax.sql.DataSource;
 
 public class PersonApiImpl implements PersonApi {
     private DataSource dataSource;
-    private static Logger logger = LoggerFactory.getLogger(PersonApiImpl.class);
+    private ConnectionFactory connectionFactory;
 
-    public PersonApiImpl(DataSource dataSource) {
+    private final static String EXCHANGE_NAME = "myExchange";
+    private final static String QUEUE_NAME = "queue";
+    private final static String ROUTING_KEY = "testRoute";
+
+    public PersonApiImpl(DataSource dataSource, ConnectionFactory connectionFactory) {
         this.dataSource = dataSource;
+        this.connectionFactory = connectionFactory;
     }
 
     @Override
     public void deletePerson(Long personId) {
-        if (findPerson(personId) != null) {
-            String removeSql = "DELETE FROM person WHERE person_id=?";
-            try (Connection connection = this.dataSource.getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement(removeSql)) {
-                setDataPrepareStatement(preparedStatement, 1, personId);
-
-                preparedStatement.executeUpdate();
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-        } else {
-            logger.info("Была выполнена попытка удаления персоны с id = " + personId + ". Персоны с таким id не существует.");
-        }
+        String message = "{\"operation\":\"delete\", \"person_id\": " + personId + "}";
+        sendMessage(message);
     }
 
     @Override
     public void savePerson(Long personId, String firstName, String lastName, String middleName) {
-        String sqlQuery = "";
-        if (findPerson(personId) == null) {
-            sqlQuery = "INSERT INTO person (first_name, last_name, middle_name, person_id) VALUES(?, ?, ?, ?)";
-        } else {
-            sqlQuery = "UPDATE person SET first_name=?, last_name=?, middle_name=?  WHERE person_id=?";
-        }
-        try (Connection connection = this.dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
+        Person person = new Person(personId, firstName, lastName, middleName);
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String message = "{\"operation\":\"save\", \"person\": " + objectMapper.writeValueAsString(person) + "}";
+            sendMessage(message);
 
-            preparedStatement.setString(1, firstName);
-            preparedStatement.setString(2, lastName);
-            preparedStatement.setString(3, middleName);
-            setDataPrepareStatement(preparedStatement, 4, personId);
-
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
     }
@@ -125,6 +114,20 @@ public class PersonApiImpl implements PersonApi {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
 
+    private void sendMessage(String message) {
+        try (com.rabbitmq.client.Connection connection = this.connectionFactory.newConnection();
+             Channel channel = connection.createChannel()) {
+            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.TOPIC);
+            channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+            channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, ROUTING_KEY);
+
+            channel.basicPublish(EXCHANGE_NAME, ROUTING_KEY, null, message.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
     }
 }
