@@ -1,13 +1,11 @@
 package io.ylab.intensive.lesson04.eventsourcing.db;
 
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;

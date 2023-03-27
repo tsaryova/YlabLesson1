@@ -31,7 +31,7 @@ public class MovieLoaderImpl implements MovieLoader {
         saveMovies();
     }
 
-    private void setListMovieFromFile(File file) throws Exception{
+    private void setListMovieFromFile(File file) throws Exception {
         try (FileReader filereader = new FileReader(file);
              CSVReader csvReader = new CSVReaderBuilder(filereader)
                      .withCSVParser(new CSVParserBuilder().withSeparator('\n').build())
@@ -72,7 +72,7 @@ public class MovieLoaderImpl implements MovieLoader {
         String insertSQL = "INSERT INTO movie (\"year\", length, title, subject, actors, actress, director, popularity, awards)" +
                 " VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (Connection connection = this.dataSource.getConnection();
-            PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
 
             for (Movie movie : this.listMovie) {
                 setDataPrepareStatement(preparedStatement, 1, movie.getYear());

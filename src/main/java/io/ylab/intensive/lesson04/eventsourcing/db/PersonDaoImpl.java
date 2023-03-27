@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-public class PersonDaoImpl implements PersonDao{
+public class PersonDaoImpl implements PersonDao {
 
     private DataSource dataSource;
     private static Logger logger = LoggerFactory.getLogger(PersonApiImpl.class);

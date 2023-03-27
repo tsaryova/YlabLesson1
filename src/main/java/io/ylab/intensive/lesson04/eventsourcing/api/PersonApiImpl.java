@@ -16,6 +16,7 @@ import com.rabbitmq.client.BuiltinExchangeType;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.ConnectionFactory;
 import io.ylab.intensive.lesson04.eventsourcing.Person;
+
 import javax.sql.DataSource;
 
 /**

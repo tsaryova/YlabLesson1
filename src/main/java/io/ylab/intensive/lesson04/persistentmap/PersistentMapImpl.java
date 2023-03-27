@@ -87,7 +87,7 @@ public class PersistentMapImpl implements PersistentMap {
              PreparedStatement preparedStatement = connection.prepareStatement(removeSql)) {
 
             preparedStatement.setString(1, this.name);
-            if (key != null){
+            if (key != null) {
                 preparedStatement.setString(2, key);
             }
 

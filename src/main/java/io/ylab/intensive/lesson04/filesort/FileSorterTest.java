@@ -2,12 +2,8 @@ package io.ylab.intensive.lesson04.filesort;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.List;
 import javax.sql.DataSource;
-import javax.xml.crypto.Data;
 
 import io.ylab.intensive.lesson04.DbUtil;
 
