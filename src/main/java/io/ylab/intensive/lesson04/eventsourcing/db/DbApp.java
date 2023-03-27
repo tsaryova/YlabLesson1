@@ -17,9 +17,7 @@ import io.ylab.intensive.lesson04.eventsourcing.Person;
 
 public class DbApp {
 
-    private final static String EXCHANGE_NAME = "exec";
     private final static String QUEUE_NAME = "queue";
-    private final static String ROUTING_KEY = "*";
 
     public static void main(String[] args) throws Exception {
         DataSource dataSource = initDb();
@@ -30,15 +28,11 @@ public class DbApp {
 
         try (Connection connection = connectionFactory.newConnection();
              Channel channel = connection.createChannel()) {
-            channel.exchangeDeclare(EXCHANGE_NAME, BuiltinExchangeType.TOPIC);
-            channel.queueDeclare(QUEUE_NAME, true, false, false, null);
-            channel.queueBind(QUEUE_NAME, EXCHANGE_NAME, ROUTING_KEY);
 
             while (!Thread.currentThread().isInterrupted()) {
                 GetResponse message = channel.basicGet(QUEUE_NAME, true);
                 if (message != null) {
                     String received = new String(message.getBody());
-                    System.out.println(received);
 
                     ObjectMapper mapper = new ObjectMapper();
                     JsonNode rootNode = mapper.readTree(received);
@@ -49,7 +43,6 @@ public class DbApp {
                              JsonNode personDataJson = rootNode.get("person");
                              Person person = mapper.readValue(personDataJson.toString(), Person.class);
                              personDao.savePerson(person);
-                             System.out.println("save");
                              break;
                          case "delete":
                              Long personId = rootNode.get("person_id").longValue();
@@ -60,7 +53,7 @@ public class DbApp {
                              }
                              break;
                          default:
-                             System.out.println("This operation is absent");
+                             System.err.println("This operation is absent");
                              break;
                      }
 
