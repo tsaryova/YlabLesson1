@@ -1,5 +1,7 @@
 package io.ylab.intensive.lesson05.sqlquerybuilder;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +16,15 @@ import java.util.List;
 @Component
 public class SQLQueryBuilderImpl implements SQLQueryBuilder {
 
+    /**
+     * Typical types are "TABLE", "VIEW", "SYSTEM TABLE", "GLOBAL TEMPORARY", "LOCAL TEMPORARY", "ALIAS", "SYNONYM"
+     * if null types include all typical types.
+     */
+    private static final String[] TABLE_TYPES = null;
+
     private DataSource dataSource;
+    private static Logger logger = LoggerFactory.getLogger(SQLQueryBuilderImpl.class);
+
 
     @Autowired
     public SQLQueryBuilderImpl(DataSource dataSource) {
@@ -23,13 +33,18 @@ public class SQLQueryBuilderImpl implements SQLQueryBuilder {
 
     @Override
     public String queryForTable(String tableName) throws SQLException {
+        String result = null;
+
         if (!getExistTableNameList(tableName).isEmpty()) {
             List<String> columnNameList = getColumnNameList(tableName);
-
-            return "SELECT " + String.join(", ", columnNameList) + " FROM " + tableName;
+            if (columnNameList.isEmpty()) {
+                logger.info(String.format("Table %s hasn't columns", tableName));
+            } else {
+                result = "SELECT " + String.join(", ", columnNameList) + " FROM " + tableName;
+            }
         }
 
-        return null;
+        return result;
     }
 
     @Override
@@ -42,8 +57,7 @@ public class SQLQueryBuilderImpl implements SQLQueryBuilder {
 
         try (Connection connection = dataSource.getConnection()) {
             DatabaseMetaData metaData = connection.getMetaData();
-            String[] types = {"TABLE"};
-            ResultSet resultSet = metaData.getTables(null, null, tableName, types);
+            ResultSet resultSet = metaData.getTables(null, null, tableName, TABLE_TYPES);
             while (resultSet.next()) {
                 tableNames.add(resultSet.getString("TABLE_NAME"));
             }
